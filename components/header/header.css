@@ -1,0 +1,72 @@
+.hdr-shell {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.hdr-shell.is-scrolled {
+  border-color: var(--color-line);
+  box-shadow: 0 8px 24px -16px rgba(5, 5, 15, 0.35);
+}
+
+.hdr-bar {
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.hdr-bar-top.is-open { transform: translateY(5px) rotate(45deg); }
+.hdr-bar-mid.is-open { opacity: 0; }
+.hdr-bar-bottom.is-open { transform: translateY(-5px) rotate(-45deg); }
+
+.hdr-menu-btn { transition: background-color 0.2s ease; }
+.hdr-menu-btn:hover { background: var(--color-panel2); }
+
+.hdr-panel-enter { animation: hdrPanelIn 0.28s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.hdr-backdrop-enter { animation: hdrBackdropIn 0.28s ease; }
+@keyframes hdrPanelIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes hdrBackdropIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ===================== أشكال اللوجو المتحركة ===================== */
+.logo-shape-gear {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: logoGearSpin 3s linear infinite;
+}
+@keyframes logoGearSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.logo-shape-cursor { animation: logoCursorBlink 1s steps(1) infinite; }
+@keyframes logoCursorBlink { 50% { opacity: 0; } }
+
+.logo-shape-git {
+  stroke-dasharray: 1;
+  animation: logoGitDraw 3.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes logoGitDraw {
+  0%   { stroke-dashoffset: 1; }
+  32%  { stroke-dashoffset: 0; }
+  48%  { stroke-dashoffset: 0; }
+  80%  { stroke-dashoffset: -1; }
+  100% { stroke-dashoffset: -1; }
+}
+
+.logo-shape-brace {
+  display: inline-block;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: logoBraceBreathe 0.8s ease-in-out infinite alternate;
+}
+@keyframes logoBraceBreathe { from { transform: scale(1); } to { transform: scale(1.3); } }
+
+.logo-shape-cloud {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: logoCloudFloat 1.2s ease-in-out infinite alternate;
+}
+@keyframes logoCloudFloat { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hdr-shell, .hdr-bar, .hdr-menu-btn { transition: none; }
+  .hdr-panel-enter, .hdr-backdrop-enter { animation: none; }
+  .logo-shape-gear,
+  .logo-shape-cursor,
+  .logo-shape-git,
+  .logo-shape-brace,
+  .logo-shape-cloud { animation: none; }
+}

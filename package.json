@@ -2,6 +2,7 @@
   "name": "best-solution",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,9 +10,21 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.10.0",
+    "gsap": "^3.15.0",
+    "jose": "^6.2.4",
+    "lenis": "^1.3.25",
+    "mongoose": "^9.8.0",
     "next": "16.2.10",
+    "nodemailer": "^9.0.3",
+    "qrcode.react": "^4.2.0",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

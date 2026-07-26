@@ -1,0 +1,332 @@
+.sig-section {
+  position: relative;
+  z-index: 1;
+  padding-top: 6rem;
+  padding-bottom: 2.5rem;
+  overflow: hidden;
+  background: transparent;
+}
+
+.sig-header {
+  position: relative;
+  z-index: 2;
+  max-width: 42rem;
+  margin-inline: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  padding-inline: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.sig-open-line {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  margin-top: 1.6rem;
+}
+.sig-open-arrows-wrap { position: relative; display: inline-block; }
+.sig-open-arrows {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6.25rem;
+  height: 2.5rem;
+}
+.sig-live-value { color: var(--color-ink); font-weight: 700; }
+.sig-open-caption { color: var(--color-muted); }
+
+/* ===================== المسار ===================== */
+.sig-track {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin-inline: auto;
+  padding-inline: max(4vw, 1.25rem);
+}
+.sig-path-svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.sig-path-base { fill: none; stroke: var(--color-line); stroke-width: 1.4; opacity: 0.6; }
+.sig-path-calc { fill: none; visibility: hidden; }
+.sig-path-progress {
+  fill: none;
+  stroke: var(--color-accent2);
+  stroke-width: 1.8;
+  opacity: 0.85;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent2) 55%, transparent));
+}
+
+/* ===================== نود النهاية — يقفل الخط بصريًا داخل حدود السكشن ===================== */
+.sig-path-end {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+}
+.sig-path-end-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--color-accent2);
+  opacity: 0.28;
+  transform: translate(-50%, -50%) scale(1);
+  animation: sigEndPulse 2.4s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.sig-section.is-active .sig-path-end-glow { animation-play-state: running; }
+@keyframes sigEndPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.22; }
+  50%      { transform: translate(-50%, -50%) scale(1.35); opacity: 0.4; }
+}
+.sig-path-end-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--color-panel);
+  border: 1.6px solid var(--color-accent2);
+  transform: translate(-50%, -50%);
+}
+
+.sig-path-end-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 3px;
+  height: 2rem;
+  overflow: visible;
+}
+.sig-path-end-stroke {
+  fill: none;
+  stroke: var(--color-accent2);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent2) 55%, transparent));
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s;
+}
+.sig-section.is-active .sig-path-end-stroke { stroke-dashoffset: 0; }
+
+.sig-marker {
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: radial-gradient(circle, #fff 0%, var(--color-accent2) 55%, transparent 100%);
+  box-shadow: 0 0 16px 4px color-mix(in srgb, var(--color-accent2) 65%, transparent);
+  pointer-events: none;
+  opacity: 0;
+  animation: sigMarkerPulse 1.8s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.sig-trail {
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  pointer-events: none;
+  opacity: 0;
+}
+@keyframes sigMarkerPulse {
+  0%, 100% { box-shadow: 0 0 14px 3px color-mix(in srgb, var(--color-accent2) 55%, transparent); }
+  50%      { box-shadow: 0 0 22px 6px color-mix(in srgb, var(--color-accent2) 75%, transparent); }
+}
+
+.sig-percent {
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-accent2);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* ===================== النقاط (المحتوى) ===================== */
+.sig-stop { position: relative; z-index: 2; max-width: 460px; padding-block: 4.5rem; }
+.sig-stop-1 { margin-inline-start: 6%; margin-inline-end: auto; }
+.sig-stop-2 { margin-inline-start: auto; margin-inline-end: 4%; max-width: 480px; }
+.sig-stop-3 { margin-inline-start: 12%; margin-inline-end: auto; }
+
+/* ===== ظهور الـ stops — IntersectionObserver + CSS transition =====
+   بديل عن gsap.fromTo/onEnter/onLeaveBack. كل sig-stop بيبدأ مختفي
+   ومزاح أفقيًا، وبيتفعّل كلاس is-visible لما يدخل الشاشة (بيتشال لو
+   خرج لفوق تاني، فبيرجع يلعب لو المستخدم رجع بالسكرول — نفس السلوك
+   القديم "play none none reverse"). */
+.sig-stop-1,
+.sig-stop-3 {
+  opacity: 0;
+  transform: translateX(-26px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sig-stop-2 {
+  opacity: 0;
+  transform: translateX(26px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[dir="rtl"] .sig-stop-1,
+[dir="rtl"] .sig-stop-3 { transform: translateX(26px); }
+[dir="rtl"] .sig-stop-2 { transform: translateX(-26px); }
+
+.sig-stop.is-visible { opacity: 1; transform: translateX(0); }
+
+.sig-stop-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #6a9955;
+  direction: ltr;
+  text-align: start;
+  margin-bottom: 0.6rem;
+}
+.sig-stop-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  font-weight: 700;
+  color: var(--color-ink);
+  text-align: start;
+  margin-bottom: 0.7rem;
+  line-height: 1.3;
+}
+.sig-stop-heading-accent { color: var(--color-accent2); font-family: var(--font-mono); font-size: 1.2rem; letter-spacing: 0.06em; }
+.sig-stop-body { font-family: var(--font-body); font-size: 0.95rem; line-height: 1.85; color: var(--color-muted); text-align: start; }
+
+/* ===================== الفورم ===================== */
+.sig-form { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.8rem; }
+.sig-field { display: flex; flex-direction: column; gap: 0.5rem; text-align: start; }
+.sig-field label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+}
+
+.sig-input-wrap { position: relative; }
+.sig-input-wrap input,
+.sig-input-wrap textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--color-line);
+  border-radius: 0;
+  padding: 0.5rem 0.1rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-ink);
+  outline: none;
+  resize: none;
+  transition: border-color 0.25s ease;
+}
+.sig-input-wrap input::placeholder,
+.sig-input-wrap textarea::placeholder { color: var(--color-muted); opacity: 0.6; }
+.sig-input-wrap input:focus,
+.sig-input-wrap textarea:focus { border-color: var(--color-accent2); }
+.sig-input-wrap[data-invalid="true"] input,
+.sig-input-wrap[data-invalid="true"] textarea { border-color: var(--color-danger, #e5484d); }
+
+.sig-input-wrap.is-shaking { animation: sigShake 0.4s ease; }
+@keyframes sigShake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60% { transform: translateX(3px); }
+}
+
+.sig-submit-wrap { margin-top: 0.4rem; align-self: start; }
+
+.sig-spinner {
+  width: 11px; height: 11px;
+  border-radius: 999px;
+  border: 1.6px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  animation: sigSpin 0.8s linear infinite;
+}
+@keyframes sigSpin { to { transform: rotate(360deg); } }
+
+/* ===================== لوحة التشخيص (بديل رسايل الخطأ) ===================== */
+.sig-terminal {
+  margin-top: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  direction: ltr;
+  text-align: start;
+}
+.sig-terminal-line {
+  min-height: 1.1em;
+  color: var(--color-muted);
+  opacity: 0;
+  transform: translateY(-3px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.sig-terminal-line.is-visible { opacity: 1; transform: translateY(0); }
+.sig-terminal-line.tone-error { color: var(--color-danger, #e5484d); }
+.sig-terminal-line.tone-success { color: var(--color-accent2); }
+.sig-terminal-line.tone-idle { color: var(--color-muted); opacity: 0.55; }
+.sig-terminal-caret::after { content: "_"; animation: sigCaretBlink 1s steps(1) infinite; }
+@keyframes sigCaretBlink { 50% { opacity: 0; } }
+
+/* ===================== قنوات بديلة ===================== */
+.sig-alt { margin-top: 1.4rem; display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; justify-content: start; }
+.sig-alt-link {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--color-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-line);
+  padding-bottom: 1px;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.sig-alt-link:hover { border-color: var(--color-accent2); color: var(--color-accent2); }
+
+.sig-section.is-active .sig-marker { animation-play-state: running; }
+
+@media (max-width: 720px) {
+  .sig-stop-1, .sig-stop-2, .sig-stop-3 { margin-inline: auto; max-width: 92vw; }
+  .sig-percent { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sig-marker, .sig-spinner { animation: none !important; }
+  .sig-input-wrap.is-shaking { animation: none !important; }
+  .sig-terminal-caret::after { animation: none !important; }
+  .sig-path-end-glow { animation: none !important; }
+  .sig-path-end-stroke { transition: none !important; stroke-dashoffset: 0 !important; }
+  .sig-stop-1, .sig-stop-2, .sig-stop-3 { transition: none !important; opacity: 1 !important; transform: none !important; }
+}
+
+.sig-honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}

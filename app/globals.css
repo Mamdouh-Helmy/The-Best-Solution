@@ -1,26 +1,373 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* الخطوط بتتحدد فعليًا تحت في html[lang] */
+  --font-display: var(--font-display-src);
+  --font-body: var(--font-body-src);
+  --font-mono: var(--font-mono-src);
+
+  /* الألوان — القيم دي هي الوضع الفاتح (Light) الافتراضي */
+  /* كومبو عالمي: Indigo (Tailwind indigo-500) × Pink (Tailwind pink-500) */
+  /* المزج بـ oklch مش srgb — بيدّي انتقال لوني نضيف بدون رمادي "وحل" في النص */
+  --color-accent-soft: color-mix(in oklch, #6366F1 60%, white 40%);
+  --color-accent2: #EC4899;
+  --color-accent: color-mix(in oklch, var(--color-accent-soft) 50%, var(--color-accent2) 50%);
+  --color-bg: #FAFAFF;
+  --color-panel: #FFFFFF;
+  --color-panel2: #F1F0FE;
+  --color-line: #E6E4F5;
+  --color-ink: #14121F;
+  --color-muted: #6B6880;
+}
+
+/* تبديل الخط حسب اللغة — الـ LanguageContext هو اللي بيغيّر html[lang] */
+html[lang="ar"] {
+  --font-display-src: var(--font-display-ar);
+  --font-body-src: var(--font-body-ar);
+}
+
+html[lang="en"] {
+  --font-display-src: var(--font-display-en);
+  --font-body-src: var(--font-body-en);
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+/* لما كلاس dark يتحط على <html>، الألوان دي بتاخد الأولوية وتبدّل كل حاجة مرة واحدة */
+/* نفس الكومبو (Indigo × Pink)، بس بتشبّع أعلى شوية عشان يبان واضح فوق خلفية غامقة */
+.dark {
+  --color-accent-soft: color-mix(in oklch, #6366F1 75%, white 25%);
+  --color-accent2: #F472B6;
+  --color-accent: color-mix(in oklch, var(--color-accent-soft) 50%, var(--color-accent2) 50%);
+  --color-bg: #0B0B14;
+  --color-panel: #16151F;
+  --color-panel2: #100F1A;
+  --color-line: #2A283A;
+  --color-ink: #F2F1FA;
+  --color-muted: #9B97B5;
+
+  color-scheme: dark;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* scroll-behavior:smooth اتشالت — Lenis هو اللي بيتحكم في نعومة السكرول دلوقتي */
+
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+::selection {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  unicode-bidi: plaintext;
+}
+
+.blueprint-frame {
+  position: relative;
+}
+
+.blueprint-frame::before,
+.blueprint-frame::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--color-accent2);
+  opacity: 0.7;
+}
+
+.blueprint-frame::before {
+  top: -1px;
+  right: -1px;
+  border-top: 2px solid;
+  border-right: 2px solid;
+}
+
+.blueprint-frame::after {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 2px solid;
+  border-left: 2px solid;
+}
+
+.section-grid {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-line) 60%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-line) 60%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ===== Scrollbar مخصص — Chrome / Edge / Safari ===== */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-panel2);
+}
+
+::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(180deg, var(--color-accent-soft), var(--color-accent2));
+  background-clip: padding-box;
+  border: 3px solid var(--color-panel2);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(180deg, var(--color-accent2), var(--color-accent-soft));
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--color-panel2);
+}
+
+/* ===== Scrollbar مخصص — Firefox ===== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) var(--color-panel2);
+}
+
+
+/* =====================================================================
+   Testimonials — إضافات لازم تتحط في آخر globals.css
+   (بعد بلوك @theme و.dark وباقي اللي عندك بالفعل)
+
+   ده مش بديل عن Tailwind — ده بس اللي فعلاً محتاج CSS خام:
+   - keyframes (Tailwind arbitrary animate بيحتاج keyframes معرّفة برة أصلاً)
+   - إيقاف/تشغيل الأنيميشن حسب .is-active (تفعيل عن طريق IntersectionObserver)
+   - سلوك مرتبط بـ [dir="rtl"]
+   ===================================================================== */
+
+/* ---- دوران الأسطح داخل الـ clip ---- */
+.test-band-spin { transform-origin: 200px 200px; animation: testSpin 60s linear infinite; animation-play-state: paused; }
+.test-earth-rotate { transform-origin: 200px 200px; animation: testSpin 90s linear infinite; animation-play-state: paused; }
+.test-mars-rotate { transform-origin: 175px 175px; animation: testSpin 130s linear infinite; animation-play-state: paused; }
+@keyframes testSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* ---- ومضات ونبضات عامة ---- */
+.test-twinkle { animation: testTwinkle 2.6s ease-in-out infinite; animation-play-state: paused; transform-origin: center; }
+@keyframes testTwinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.25); } }
+
+.test-blink { animation: testBeacon 1.4s ease-in-out infinite; animation-play-state: paused; }
+@keyframes testBeacon { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+@keyframes testSpecularPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 0.85; transform: scale(1.08); }
+}
+.test-specular-pulse { transform-box: fill-box; transform-origin: center; animation: testSpecularPulse 5s ease-in-out infinite; animation-play-state: paused; }
+
+/* ---- نار الصاروخ ودخانه ---- */
+@keyframes testFlameFlicker {
+  0%, 100% { transform: scaleY(1); opacity: 0.75; }
+  50%      { transform: scaleY(1.4); opacity: 1; }
+}
+.test-flame { transform-origin: 130px 320px; animation: testFlameFlicker 0.5s ease-in-out infinite; animation-play-state: paused; }
+.test-flame-mid { animation-duration: 0.45s; }
+.test-flame-inner { animation-duration: 0.4s; }
+
+.test-smoke {
+  fill: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-name: testSmokeRise;
+  animation-duration: 2.4s;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+}
+.test-smoke-1 { animation-delay: 0s; }
+.test-smoke-2 { animation-delay: 0.6s; }
+.test-smoke-3 { animation-delay: 1.2s; }
+.test-smoke-4 { animation-delay: 1.8s; }
+.test-smoke-5 { animation-delay: 0.9s; }
+@keyframes testSmokeRise {
+  0%   { opacity: 0.55; transform: translateY(0) scale(0.6); }
+  100% { opacity: 0; transform: translateY(-90px) scale(2.1); }
+}
+
+.test-spark {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-name: testSparkShoot;
+  animation-duration: 0.9s;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+}
+.test-spark-1 { animation-delay: 0s; }
+.test-spark-2 { animation-delay: 0.3s; }
+.test-spark-3 { animation-delay: 0.6s; }
+@keyframes testSparkShoot {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(60px) scale(0.3); }
+}
+
+/* ---- المريخ: عاصفة غبار ---- */
+.test-dust-drift { animation: testDustDrift 20s ease-in-out infinite; animation-play-state: paused; transform-origin: center; }
+@keyframes testDustDrift {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  50%      { transform: translateX(3px) rotate(1.5deg); }
+}
+
+/* ---- الشمس ---- */
+.test-corona-pulse { animation: testCoronaPulse 3.4s ease-in-out infinite; animation-play-state: paused; transform-origin: center; }
+.test-corona-pulse-2 { animation-duration: 4.6s; animation-direction: reverse; }
+@keyframes testCoronaPulse { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+
+.test-flare-spin { animation: testSpin 40s linear infinite; animation-play-state: paused; }
+.test-lensflare { animation: testLensFlareFade 6s ease-in-out infinite; animation-play-state: paused; }
+@keyframes testLensFlareFade { 0%, 100% { opacity: 0.55; } 50% { opacity: 0.9; } }
+
+.test-sun-spot { animation: testSunSpot 3.6s ease-in-out infinite; animation-play-state: paused; }
+@keyframes testSunSpot { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+
+.test-prominence-flicker { animation: testPromFlicker 2.2s ease-in-out infinite; animation-play-state: paused; }
+@keyframes testPromFlicker { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+
+/* ---- الأرض: غيوم وأضواء مدن ---- */
+.test-cloud-drift { animation: testCloudDrift 22s linear infinite; animation-play-state: paused; }
+@keyframes testCloudDrift { from { transform: translateX(0); } to { transform: translateX(24px); } }
+
+.test-cloud-drift-rev { animation: testCloudDriftRev 34s linear infinite; animation-play-state: paused; }
+@keyframes testCloudDriftRev { from { transform: translateX(0); } to { transform: translateX(-18px); } }
+
+.test-city-light { animation: testCityLight 2.8s ease-in-out infinite; animation-play-state: paused; }
+@keyframes testCityLight { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.6; } }
+
+/* ---- ميلان ثلاثي الأبعاد خفيف لكل الديكورات ---- */
+.test-decor svg {
+  transform-style: preserve-3d;
+  will-change: transform;
+  animation: testTilt3d 10s ease-in-out infinite;
+  animation-play-state: paused;
+}
+@keyframes testTilt3d {
+  0%   { transform: rotateX(6deg) rotateY(-9deg); }
+  50%  { transform: rotateX(-6deg) rotateY(9deg); }
+  100% { transform: rotateX(6deg) rotateY(-9deg); }
+}
+svg.test-rocket-svg {
+  animation-name: testTilt3d;
+  animation-duration: 10s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+/* ---- شارة "The Best Solution" ---- */
+[dir="rtl"] .test-best-arrow { transform: scaleX(-1); }
+.test-arrow-draw { stroke-dasharray: 200; stroke-dashoffset: 200; }
+.test-section.is-active .test-arrow-draw {
+  animation: testArrowDraw 1.4s ease-out 0.5s forwards;
+}
+@keyframes testArrowDraw { to { stroke-dashoffset: 0; } }
+
+.test-star-spin { transform-origin: 50% 50%; animation: testSpin 24s linear infinite; animation-play-state: paused; }
+.test-star-sparkle { transform-origin: center; animation: testTwinkle 2.2s ease-in-out infinite; animation-play-state: paused; }
+.test-star-sparkle-2 { animation-delay: 1.1s; }
+
+/* ---- كارت "ribbon" (شريط مائل بيتقلب حسب الاتجاه) ---- */
+.test-ribbon {
+  position: absolute;
+  top: 1rem;
+  inset-inline-end: -2.6rem;
+  transform: rotate(35deg);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 3rem;
+}
+[dir="rtl"] .test-ribbon { transform: rotate(-35deg); }
+
+/* ---- تشغيل كل الأنيميشنز اللي فوق بس لما السيكشن يبقى ظاهر ---- */
+.test-section.is-active .test-band-spin,
+.test-section.is-active .test-earth-rotate,
+.test-section.is-active .test-mars-rotate,
+.test-section.is-active .test-twinkle,
+.test-section.is-active .test-blink,
+.test-section.is-active .test-flame,
+.test-section.is-active .test-smoke,
+.test-section.is-active .test-dust-drift,
+.test-section.is-active .test-spark,
+.test-section.is-active .test-specular-pulse,
+.test-section.is-active .test-corona-pulse,
+.test-section.is-active .test-flare-spin,
+.test-section.is-active .test-lensflare,
+.test-section.is-active .test-sun-spot,
+.test-section.is-active .test-prominence-flicker,
+.test-section.is-active .test-cloud-drift,
+.test-section.is-active .test-cloud-drift-rev,
+.test-section.is-active .test-city-light,
+.test-section.is-active .test-decor svg,
+.test-section.is-active .test-star-spin,
+.test-section.is-active .test-star-sparkle {
+  animation-play-state: running;
+}
+
+/* ---- Respect لتفضيل تقليل الحركة ---- */
+@media (prefers-reduced-motion: reduce) {
+  .test-band-spin, .test-earth-rotate, .test-mars-rotate, .test-twinkle,
+  .test-blink, .test-flame, .test-smoke, .test-dust-drift, .test-spark, .test-specular-pulse,
+  .test-corona-pulse, .test-flare-spin, .test-lensflare, .test-sun-spot, .test-prominence-flicker,
+  .test-cloud-drift, .test-cloud-drift-rev, .test-city-light,
+  .test-decor svg, .test-rocket-svg, .test-star-spin, .test-star-sparkle,
+  .test-arrow-draw {
+    animation: none !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* =========================================================================
+   SiteSky — الـ keyframes بس (Tailwind arbitrary values مش بيقدر يولّد
+   @keyframes بنفسه، فلازم تتعرّف مرة واحدة هنا وبعدين تتستخدم من جوه
+   الكومبوننت عن طريق [animation-name:...]). كل باقي الـ styling بقى
+   Tailwind utility classes جوه SiteSky.jsx نفسه.
+   ========================================================================= */
+
+@keyframes siteTwinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50%      { opacity: 1;    transform: scale(1.1); }
 }
+
+@keyframes siteAuroraDrift {
+  0%, 100% { transform: translateX(-3%) scaleY(1);   opacity: 0.14; }
+  50%      { transform: translateX(3%)  scaleY(1.1); opacity: 0.26; }
+}
+
+@keyframes siteCloudDrift {
+  0%   { transform: translateX(-6%); }
+  50%  { transform: translateX(6%); }
+  100% { transform: translateX(-6%); }
+}
+
+@keyframes siteMoonBreathe {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.045); }
+}
+
