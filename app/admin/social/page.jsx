@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { ICON_LIBRARY } from "@/components/Footer/icons.jsx";
+import { ICON_LIBRARY } from "@/components/footer/icons.jsx";
 
 function PlusIcon(props) {
     return (
