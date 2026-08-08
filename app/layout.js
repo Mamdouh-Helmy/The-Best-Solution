@@ -42,9 +42,34 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://www.the-best-solution.site"), // ✅ الدومين بتاعك
   title: "The Best Solution | حلول تقنية مصممة بدقة",
   description:
     "The Best Solution — شركة حلول تقنية وبرمجية في القاهرة، بنبني أنظمة وتطبيقات مصممة بدقة هندسية لخدمة أهداف عملك.",
+  openGraph: {
+    title: "The Best Solution | حلول تقنية مصممة بدقة",
+    description:
+      "The Best Solution — شركة حلول تقنية وبرمجية في القاهرة، بنبني أنظمة وتطبيقات مصممة بدقة هندسية لخدمة أهداف عملك.",
+    url: "https://www.the-best-solution.site",
+    siteName: "The Best Solution",
+    images: [
+      {
+        url: "/og-image.png", // ⬅️ الصورة اللي هتحطها في مجلد public
+        width: 1200,
+        height: 630,
+        alt: "The Best Solution Logo",
+      },
+    ],
+    locale: "ar_EG",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Best Solution | حلول تقنية مصممة بدقة",
+    description:
+      "The Best Solution — شركة حلول تقنية وبرمجية في القاهرة، بنبني أنظمة وتطبيقات مصممة بدقة هندسية لخدمة أهداف عملك.",
+    images: ["/og-image.png"], // ⬅️ نفس الصورة
+  },
 };
 
 // سكريبت بيشتغل قبل أي رندر عشان يمنع وميض الثيم (FOUC) لما الصفحة تفتح
