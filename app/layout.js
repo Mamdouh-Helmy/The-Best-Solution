@@ -54,7 +54,7 @@ export const metadata = {
     siteName: "The Best Solution",
     images: [
       {
-        url: "/og-image.png", // ⬅️ الصورة اللي هتحطها في مجلد public
+        url: "/og-image.jpeg", // ⬅️ الصورة اللي هتحطها في مجلد public
         width: 1200,
         height: 630,
         alt: "The Best Solution Logo",
@@ -68,7 +68,7 @@ export const metadata = {
     title: "The Best Solution | حلول تقنية مصممة بدقة",
     description:
       "The Best Solution — شركة حلول تقنية وبرمجية في القاهرة، بنبني أنظمة وتطبيقات مصممة بدقة هندسية لخدمة أهداف عملك.",
-    images: ["/og-image.png"], // ⬅️ نفس الصورة
+    images: ["/og-image.jpeg"], // ⬅️ نفس الصورة
   },
 };
 
